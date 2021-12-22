@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-
+import 'package:meuapp/modules/login/pages/create_account/create_account_controller.dart';
 import 'package:meuapp/shared/theme/app_theme.dart';
 import 'package:meuapp/shared/widgets/button/button.dart';
 import 'package:meuapp/shared/widgets/input_text/input_text.dart';
 import 'package:validators/validators.dart';
 
-import 'login_controller.dart';
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class CreateAccountPage extends StatefulWidget {
+  const CreateAccountPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateAccountPage> createState() => _CreateAccountPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final controller = LoginController();
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  final controller = CreateAccountController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppTheme.colors.background,
+        leading: BackButton(
+          color: AppTheme.colors.backButton,
+        ),
+        elevation: 0,
+      ),
       backgroundColor: AppTheme.colors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -26,10 +31,31 @@ class _LoginPageState extends State<LoginPage> {
           key: controller.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                "assets/images/logo.png",
-                width: 200,
+              Text(
+                "Criando uma conta",
+                style: AppTheme.textStyles.title,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Mantenha seus gastos em dia",
+                style: AppTheme.textStyles.subtitle,
+              ),
+              SizedBox(
+                height: 38,
+              ),
+              InputText(
+                label: "Nome",
+                hint: "Digite seu nome completo",
+                validator: (value) =>
+                    value.isNotEmpty ? null : "Digite seu nome completo",
+                onChanged: (value) => controller.onChange(name: value),
+              ),
+              SizedBox(
+                height: 18,
               ),
               InputText(
                 label: "E-mail",
@@ -53,19 +79,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: 14,
               ),
               Button(
-                label: "Entrar",
-                onTap: () {
-                  controller.login();
-                },
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Button(
                 label: "Criar conta",
-                type: ButtonType.outline,
                 onTap: () {
-                  Navigator.pushNamed(context, "/login/create-account");
+                  controller.create();
                 },
               ),
             ],
