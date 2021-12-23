@@ -14,6 +14,31 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final controller = CreateAccountController();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      controller.state.when(
+          success: (value) => print(value),
+          error: (message, _) => scaffoldKey.currentState!
+              .showBottomSheet((context) => BottomSheet(
+                    onClosing: () {},
+                    builder: (context) => Container(
+                      child: Text(message),
+                    ),
+                  )),
+          orElse: () {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,12 +103,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               SizedBox(
                 height: 14,
               ),
-              Button(
+              AnimatedBuilder(
+                animation: controller, 
+                builder: (_, __) => controller.state.when(
+                loading: () => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                  ],
+                ) ,
+                orElse: () => Button(
                 label: "Criar conta",
                 onTap: () {
                   controller.create();
                 },
-              ),
+              ),))
             ],
           ),
         ),
