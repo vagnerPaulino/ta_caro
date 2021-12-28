@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meuapp/modules/login/repositories/login_repository_impl.dart';
+import 'package:meuapp/shared/services/app_database.dart';
 
 import 'package:meuapp/shared/theme/app_theme.dart';
 import 'package:meuapp/shared/widgets/button/button.dart';
@@ -15,16 +17,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final controller = LoginController();
+  late final LoginController controller;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
+    controller = LoginController(
+        repository: LoginRepositoryImpl(database: AppDatabase.instance));
     controller.addListener(() {
       controller.state.when(
           success: (value) => Navigator.pushNamed(context, "/home"),
-          error: (message, _) =>
-              scaffoldKey.currentState!.showBottomSheet((context) => BottomSheet(
+          error: (message, _) => scaffoldKey.currentState!
+              .showBottomSheet((context) => BottomSheet(
                     onClosing: () {},
                     builder: (context) => Container(
                       child: Text(message),
